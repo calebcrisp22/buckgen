@@ -184,7 +184,7 @@ class Generate(commands.Cog):
 
         # ── Open DM first — if closed, bail before popping stock ───────────────
         try:
-            status_msg = await interaction.user.send("⌛ **Processing account...** Fetching details...")
+            await interaction.user.send("⌛ **Processing account...** Fetching details...")
         except discord.Forbidden:
             embed = discord.Embed(
                 color=0xFEE75C, title="⚠️ Could Not Send DM",
@@ -196,7 +196,7 @@ class Generate(commands.Cog):
         # ── Pop stock ──────────────────────────────────────────────────────────
         raw = db.pop_stock(category)
         if not raw:
-            await status_msg.edit(
+            await interaction.followup.send(
                 content=f"❌ **{CATEGORY_LABELS[category]}** just sold out — someone grabbed the last one!"
             )
             embed = discord.Embed(
@@ -285,9 +285,9 @@ class Generate(commands.Cog):
 
         # ── Send DM cascade ────────────────────────────────────────────────────
         await asyncio.sleep(1.3)
-        await status_msg.edit(content="⌛ **Adding account to API...** This may take 30–60 seconds...")
+        await interaction.followup.send(content="⌛ **Adding account to API...** This may take 30–60 seconds...")
         await asyncio.sleep(10)
-        await status_msg.edit(content="✅ **Account ready!** Here are your details below 👇")
+        await interaction.followup.send(content="✅ **Account ready!** Here are your details below 👇")
 
         # ── Assemble payloads ──────────────────────────────────────────────────
         dm_payload: dict = {"embeds": [dm_embed], "view": view}
@@ -319,7 +319,7 @@ class Generate(commands.Cog):
                 f"last_gen_{cat_key}": last_gen,
                 "last_gen": user.get("last_gen", 0),
             })
-            await status_msg.edit(
+            await interaction.followup.send(
                 content="⚠️ Couldn't deliver your account (your DMs may have just closed). "
                         "It was returned to stock — please run `/generate` again."
             )
