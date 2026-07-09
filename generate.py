@@ -184,7 +184,7 @@ class Generate(commands.Cog):
 
         # ── Open DM first — if closed, bail before popping stock ───────────────
         try:
-            await interaction.user.send("⌛ **Processing account...** Fetching details...")
+            status_msg = await interaction.user.send("⌛ **Processing account...** Fetching details...")
         except discord.Forbidden:
             embed = discord.Embed(
                 color=0xFEE75C, title="⚠️ Could Not Send DM",
@@ -285,9 +285,9 @@ class Generate(commands.Cog):
 
         # ── Send DM cascade ────────────────────────────────────────────────────
         await asyncio.sleep(1.3)
-        await interaction.followup.send(content="⌛ **Adding account to API...** This may take 30–60 seconds...")
+        await status_msg.edit(content="⌛ **Adding account to API...** This may take 30–60 seconds...")
         await asyncio.sleep(10)
-        await interaction.followup.send(content="✅ **Account ready!** Here are your details below 👇")
+        await status_msg.edit(content="✅ **Account ready!** Here are your details below 👇")
 
         # ── Assemble payloads ──────────────────────────────────────────────────
         dm_payload: dict = {"embeds": [dm_embed], "view": view}
